@@ -1,13 +1,13 @@
 
 # Projetos de Sistemas Embarcados - EmbarcaTech 2025
 
-Autor: **Insira Seu Nome**
+Autor: Adriana Rocha Castro de Paula
 
 Curso: Residência Tecnológica em Sistemas Embarcados
 
 Instituição: EmbarcaTech - HBr
 
-Campinas, ___ de 2025
+Campinas, 09 de junho de 2025
 
 # Gravador de Áudio com Raspberry Pi Pico
 
