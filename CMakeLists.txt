@@ -1,10 +1,11 @@
-# Generated Cmake Pico project file
-
+# Versão mínima do CMake para o projeto.
 cmake_minimum_required(VERSION 3.13)
 
+# Define os padrões das linguagens C e C++.
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 
 # Initialise pico_sdk from installed location
 # (note this can come from environment, CMake cache etc)
@@ -22,48 +23,57 @@ set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 if (EXISTS ${picoVscode})
     include(${picoVscode})
 endif()
-# ====================================================================================
+# == END OF DO NOT EDIT LINES ==
+
 set(PICO_BOARD pico_w CACHE STRING "Board type")
 
-# Pull in Raspberry Pi Pico SDK (must be before project)
+# Inclui as configurações do SDK do Pico.
 include(pico_sdk_import.cmake)
 
-project(synth_audio C CXX ASM)
+# Define a placa alvo. Como você tem uma Pico W, usamos "pico_w".
+set(PICO_BOARD pico_w)
 
-# Initialise the Raspberry Pi Pico SDK
+# Define o nome do projeto.
+project(sintetizador_audio C CXX ASM)
+
+# Inicializa o SDK, preparando as configurações para a placa.
 pico_sdk_init()
 
-# Add executable. Default name is the project name, version 0.1
-
-add_executable( synth_audio
-  main.c
-)
-
-pico_set_program_name(synth_audio "synth_audio")
-pico_set_program_version(synth_audio "0.1")
-
-# Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(synth_audio 0)
-pico_enable_stdio_usb(synth_audio 1)
-
-# Add the standard library to the build
-target_link_libraries(synth_audio
-        # Biblioteca padrão do Pico SDK, que fornece funções básicas para o RP2040 (GPIO, temporizadores, UART, etc.).
-        pico_stdlib
+# Adiciona o executável final do projeto.
+# Inclui todos os nossos arquivos .c e também o .c da biblioteca do display.
+add_executable(sintetizador_audio
+        main.c
+        audio.c
+        display.c
+        utils.c
+        lib/pico-ssd1306/ssd1306.c
         )
 
-# Add the standard include files to the build
-target_include_directories(synth_audio PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}
-        ${CMAKE_CURRENT_LIST_DIR}/include
+pico_set_program_name(sintetizador_audio "sintetizador_audio")
+pico_set_program_version(sintetizador_audio "0.1")
+
+# Modify the below lines to enable/disable output over UART/USB
+pico_enable_stdio_uart(sintetizador_audio 0)
+pico_enable_stdio_usb(sintetizador_audio 1)
+
+# Adiciona os diretórios onde o compilador deve procurar os arquivos de cabeçalho (.h).
+# Isso permite que usemos #include "ssd1306.h" nos nossos arquivos.
+target_include_directories(sintetizador_audio PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/pico-ssd1306
 )
 
-# Add any user requested libraries
-target_link_libraries(synth_audio 
+# Vincula as bibliotecas de hardware do SDK do Pico ao nosso executável.
+# - pico_stdlib: Funções padrão (GPIO, tempo, etc.).
+# - hardware_adc: Para usar o Conversor Analógico-Digital (gravação).
+# - hardware_pwm: Para usar a Modulação por Largura de Pulso (reprodução).
+# - hardware_i2c: Para a comunicação com o display OLED.
+target_link_libraries(sintetizador_audio
+        pico_stdlib
         hardware_adc
-        hardware_dma
         hardware_pwm
-)
+        hardware_i2c
+        )
 
-pico_add_extra_outputs(synth_audio)
-
+# Gera os arquivos de saída finais, incluindo o .uf2 que será gravado na Pico.
+pico_add_extra_outputs(sintetizador_audio)
