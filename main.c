@@ -1,11 +1,7 @@
-#include <stdio.h> // Biblioteca padrão
-#include <math.h> // Biblioteca de matemática (função "round" foi utilizada)
-
-#include "pico/stdlib.h" // Biblioteca padrão pico
-#include "hardware/gpio.h" // Biblioteca de GPIOs
-#include "hardware/adc.h" // Biblioteca do ADC
-#include "hardware/pwm.h" // Biblioteca do PWM
 #include <stdio.h>
+#include "pico/stdlib.h"
+#include "hardware/gpio.h"
+#include "hardware/adc.h"
 #include "hardware/irq.h"
 #include "ssd1306.h"
 
@@ -166,8 +162,4 @@ void sample_mic(short *samples_buffer, uint8_t samples_num) {
         printf("%d\n", res);
         samples_buffer[i] = res - 2048;
     }
-}
-
-int main() {
-  return 0;
 }
